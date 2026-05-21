@@ -46,7 +46,7 @@ def converter(de: str, para: str, valor: float) -> dict:
         "para": para,
         "valor": valor,
         "cotacao": cotacao,
-        "valor_convertido": valor * cotacao,
+        "valor_convertido": round(valor * cotacao, 8),
         "atualizado_em": atualizado_em,
     }
 
