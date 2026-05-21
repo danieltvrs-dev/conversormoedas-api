@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Variáveis de ambiente (segredos não vão para o Git)
+.env
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Editor e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
