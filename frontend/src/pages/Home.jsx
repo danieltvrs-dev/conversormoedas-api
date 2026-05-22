@@ -13,6 +13,7 @@ import BotaoInverter from '../components/BotaoInverter'
 import CartaoCotacao from '../components/CartaoCotacao'
 import GraficoVariacao from '../components/GraficoVariacao'
 import Historico from '../components/Historico'
+import Rodape from '../components/Rodape'
 
 function Home() {
   const [moedas, setMoedas] = useState([])
@@ -171,6 +172,8 @@ function Home() {
             className="lg:col-span-3"
           />
         </div>
+
+        <Rodape />
       </div>
     </main>
   )
