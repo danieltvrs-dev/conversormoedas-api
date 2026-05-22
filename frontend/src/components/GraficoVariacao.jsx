@@ -24,6 +24,7 @@ function GraficoVariacao({
   para,
   periodo,
   aoMudarPeriodo,
+  carregando,
   className = '',
 }) {
   const variacao = calcularVariacao(dados)
@@ -70,7 +71,9 @@ function GraficoVariacao({
         ))}
       </div>
 
-      {dados.length === 0 ? (
+      {carregando && dados.length === 0 ? (
+        <p className="mt-4 text-sm text-slate-500">Carregando o gráfico...</p>
+      ) : dados.length === 0 ? (
         <p className="mt-4 text-sm text-slate-500">
           Sem dados de variação para este par.
         </p>
