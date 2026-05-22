@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app.models import conversao  # importado para registrar a tabela no SQLAlchemy
-from app.routers import cambio
+from app.routers import cambio, historico
 
 Base.metadata.create_all(bind=engine)
 
@@ -17,6 +17,7 @@ app.add_middleware(
 )
 
 app.include_router(cambio.router)
+app.include_router(historico.router)
 
 
 @app.get("/")
