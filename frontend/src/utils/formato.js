@@ -11,3 +11,8 @@ export function formatarData(texto) {
   const data = new Date(texto.replace(' ', 'T'))
   return data.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 }
+
+export function formatarDiaMes(texto) {
+  const [, mes, dia] = texto.split('-')
+  return `${dia}/${mes}`
+}
