@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react'
 import { listarMoedas, converter } from '../services/cambioService'
+import {
+  salvarConversao,
+  listarHistorico,
+  limparHistorico,
+} from '../services/historicoService'
 import { formatarNumero, formatarData } from '../utils/formato'
 import SeletorMoeda from '../components/SeletorMoeda'
 import CampoValor from '../components/CampoValor'
 import BotaoInverter from '../components/BotaoInverter'
+import Historico from '../components/Historico'
 
 function Home() {
   const [moedas, setMoedas] = useState([])
@@ -13,11 +19,19 @@ function Home() {
   const [resultado, setResultado] = useState(null)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
+  const [historico, setHistorico] = useState([])
+  const [salvando, setSalvando] = useState(false)
 
   useEffect(() => {
     listarMoedas()
       .then(setMoedas)
       .catch(() => setErro('Não foi possível carregar a lista de moedas.'))
+  }, [])
+
+  useEffect(() => {
+    listarHistorico()
+      .then(setHistorico)
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -47,11 +61,40 @@ function Home() {
     setPara(de)
   }
 
+  async function salvar() {
+    if (!resultado) return
+    setSalvando(true)
+    try {
+      const salva = await salvarConversao({
+        moeda_origem: resultado.de,
+        moeda_destino: resultado.para,
+        valor: resultado.valor,
+        valor_convertido: resultado.valor_convertido,
+        cotacao: resultado.cotacao,
+      })
+      setHistorico((atual) => [salva, ...atual])
+    } catch {
+      setErro('Não foi possível salvar a conversão.')
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  async function limpar() {
+    if (!window.confirm('Limpar todo o histórico?')) return
+    try {
+      await limparHistorico()
+      setHistorico([])
+    } catch {
+      setErro('Não foi possível limpar o histórico.')
+    }
+  }
+
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0b1120] p-4 text-slate-100">
+    <main className="relative min-h-screen overflow-hidden bg-[#0b1120] text-slate-100">
       <div className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-teal-500/20 blur-3xl" />
 
-      <div className="relative w-full max-w-md">
+      <div className="relative mx-auto w-full max-w-md px-4 py-10">
         <header className="mb-6 text-center">
           <h1 className="text-2xl font-bold tracking-tight">Conversor de Moedas</h1>
           <p className="mt-1 text-sm text-slate-400">Cotações em tempo real</p>
@@ -98,7 +141,18 @@ function Home() {
               </div>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={salvar}
+            disabled={!resultado || carregando || salvando}
+            className="mt-2 w-full rounded-xl bg-teal-400 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-teal-300 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {salvando ? 'Salvando...' : 'Salvar no histórico'}
+          </button>
         </div>
+
+        <Historico itens={historico} aoLimpar={limpar} />
       </div>
     </main>
   )
