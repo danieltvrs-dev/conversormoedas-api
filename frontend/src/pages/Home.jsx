@@ -25,7 +25,9 @@ function Home() {
   const [erro, setErro] = useState('')
   const [variacao, setVariacao] = useState([])
   const [periodo, setPeriodo] = useState(15)
+  const [carregandoVariacao, setCarregandoVariacao] = useState(true)
   const [historico, setHistorico] = useState([])
+  const [carregandoHistorico, setCarregandoHistorico] = useState(true)
   const [salvando, setSalvando] = useState(false)
 
   useEffect(() => {
@@ -38,12 +40,15 @@ function Home() {
     listarHistorico()
       .then(setHistorico)
       .catch(() => {})
+      .finally(() => setCarregandoHistorico(false))
   }, [])
 
   useEffect(() => {
+    setCarregandoVariacao(true)
     buscarVariacao(de, para, periodo)
       .then(setVariacao)
       .catch(() => setVariacao([]))
+      .finally(() => setCarregandoVariacao(false))
   }, [de, para, periodo])
 
   useEffect(() => {
@@ -163,12 +168,14 @@ function Home() {
             para={para}
             periodo={periodo}
             aoMudarPeriodo={setPeriodo}
+            carregando={carregandoVariacao}
             className="lg:col-span-2"
           />
 
           <Historico
             itens={historico}
             aoLimpar={limpar}
+            carregando={carregandoHistorico}
             className="lg:col-span-3"
           />
         </div>
