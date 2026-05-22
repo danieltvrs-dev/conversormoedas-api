@@ -8,6 +8,8 @@ import {
 } from 'recharts'
 import { formatarNumero, formatarDiaMes } from '../utils/formato'
 
+const PERIODOS = [7, 15, 30]
+
 function calcularVariacao(dados) {
   if (dados.length < 2) return null
   const inicio = dados[0].cotacao
@@ -16,7 +18,14 @@ function calcularVariacao(dados) {
   return ((fim - inicio) / inicio) * 100
 }
 
-function GraficoVariacao({ dados, de, para, className = '' }) {
+function GraficoVariacao({
+  dados,
+  de,
+  para,
+  periodo,
+  aoMudarPeriodo,
+  className = '',
+}) {
   const variacao = calcularVariacao(dados)
   const subiu = variacao !== null && variacao >= 0
 
@@ -42,6 +51,23 @@ function GraficoVariacao({ dados, de, para, className = '' }) {
             %
           </span>
         )}
+      </div>
+
+      <div className="mt-3 inline-flex rounded-lg border border-white/10 bg-slate-800/40 p-0.5">
+        {PERIODOS.map((dias) => (
+          <button
+            key={dias}
+            type="button"
+            onClick={() => aoMudarPeriodo(dias)}
+            className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+              periodo === dias
+                ? 'bg-teal-400 text-slate-900'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            {dias}d
+          </button>
+        ))}
       </div>
 
       {dados.length === 0 ? (

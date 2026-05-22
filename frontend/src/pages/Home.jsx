@@ -22,6 +22,7 @@ function Home() {
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
   const [variacao, setVariacao] = useState([])
+  const [periodo, setPeriodo] = useState(15)
   const [historico, setHistorico] = useState([])
   const [salvando, setSalvando] = useState(false)
 
@@ -38,10 +39,10 @@ function Home() {
   }, [])
 
   useEffect(() => {
-    buscarVariacao(de, para)
+    buscarVariacao(de, para, periodo)
       .then(setVariacao)
       .catch(() => setVariacao([]))
-  }, [de, para])
+  }, [de, para, periodo])
 
   useEffect(() => {
     const numero = Number(valor)
@@ -166,6 +167,8 @@ function Home() {
             dados={variacao}
             de={de}
             para={para}
+            periodo={periodo}
+            aoMudarPeriodo={setPeriodo}
             className="lg:col-span-2"
           />
 
