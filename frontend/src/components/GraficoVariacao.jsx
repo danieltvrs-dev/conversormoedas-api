@@ -8,12 +8,41 @@ import {
 } from 'recharts'
 import { formatarNumero, formatarDiaMes } from '../utils/formato'
 
-function GraficoVariacao({ dados, de, para }) {
+function calcularVariacao(dados) {
+  if (dados.length < 2) return null
+  const inicio = dados[0].cotacao
+  const fim = dados[dados.length - 1].cotacao
+  if (inicio === 0) return null
+  return ((fim - inicio) / inicio) * 100
+}
+
+function GraficoVariacao({ dados, de, para, className = '' }) {
+  const variacao = calcularVariacao(dados)
+  const subiu = variacao !== null && variacao >= 0
+
   return (
-    <section className="mt-6 rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl backdrop-blur-xl">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">
-        Variação · {de} para {para}
-      </h2>
+    <section
+      className={`rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl backdrop-blur-xl ${className}`}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Variação · {de} para {para}
+        </h2>
+        {variacao !== null && (
+          <span
+            className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
+              subiu ? 'bg-teal-400/15 text-teal-300' : 'bg-red-400/15 text-red-300'
+            }`}
+          >
+            {subiu ? '▲' : '▼'}{' '}
+            {Math.abs(variacao).toLocaleString('pt-BR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+            %
+          </span>
+        )}
+      </div>
 
       {dados.length === 0 ? (
         <p className="mt-4 text-sm text-slate-500">
