@@ -1,7 +1,7 @@
 function Rodape() {
   return (
     <footer className="mt-10 border-t border-white/5 pt-6 text-center text-xs text-slate-500">
-      <p>Conversor de Moedas, feito com React e FastAPI</p>
+      <p>Feito por Daniel Tavares, com React e FastAPI</p>
       <a
         href="https://github.com/danieltvrs-dev/conversormoedas-api"
         target="_blank"
