@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { listarMoedas, converter } from '../services/cambioService'
+import { listarMoedas, converter, buscarVariacao } from '../services/cambioService'
 import {
   salvarConversao,
   listarHistorico,
@@ -9,6 +9,7 @@ import { formatarNumero, formatarData } from '../utils/formato'
 import SeletorMoeda from '../components/SeletorMoeda'
 import CampoValor from '../components/CampoValor'
 import BotaoInverter from '../components/BotaoInverter'
+import GraficoVariacao from '../components/GraficoVariacao'
 import Historico from '../components/Historico'
 
 function Home() {
@@ -19,6 +20,7 @@ function Home() {
   const [resultado, setResultado] = useState(null)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
+  const [variacao, setVariacao] = useState([])
   const [historico, setHistorico] = useState([])
   const [salvando, setSalvando] = useState(false)
 
@@ -33,6 +35,12 @@ function Home() {
       .then(setHistorico)
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    buscarVariacao(de, para)
+      .then(setVariacao)
+      .catch(() => setVariacao([]))
+  }, [de, para])
 
   useEffect(() => {
     const numero = Number(valor)
@@ -151,6 +159,8 @@ function Home() {
             {salvando ? 'Salvando...' : 'Salvar no histórico'}
           </button>
         </div>
+
+        <GraficoVariacao dados={variacao} de={de} para={para} />
 
         <Historico itens={historico} aoLimpar={limpar} />
       </div>
