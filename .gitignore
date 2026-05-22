@@ -19,5 +19,5 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Configurações locais do Claude Code (pessoais, não do projeto)
-.claude/settings.local.json
+# Configurações e tooling locais do Claude Code (não fazem parte do projeto)
+.claude/
