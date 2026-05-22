@@ -1,7 +1,7 @@
 import { formatarNumero, formatarData } from '../utils/formato'
 import MoedaIcone from './MoedaIcone'
 
-function Historico({ itens, aoLimpar, className = '' }) {
+function Historico({ itens, aoLimpar, carregando, className = '' }) {
   return (
     <section
       className={`rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl backdrop-blur-xl ${className}`}
@@ -21,7 +21,9 @@ function Historico({ itens, aoLimpar, className = '' }) {
         )}
       </div>
 
-      {itens.length === 0 ? (
+      {carregando && itens.length === 0 ? (
+        <p className="mt-4 text-sm text-slate-500">Carregando o histórico...</p>
+      ) : itens.length === 0 ? (
         <p className="mt-4 text-sm text-slate-500">
           Nenhuma conversão salva ainda.
         </p>
