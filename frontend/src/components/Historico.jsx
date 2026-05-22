@@ -1,8 +1,10 @@
 import { formatarNumero, formatarData } from '../utils/formato'
 
-function Historico({ itens, aoLimpar }) {
+function Historico({ itens, aoLimpar, className = '' }) {
   return (
-    <section className="mt-6 rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl backdrop-blur-xl">
+    <section
+      className={`rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl backdrop-blur-xl ${className}`}
+    >
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-300">
           Histórico
