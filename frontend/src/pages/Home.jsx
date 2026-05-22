@@ -5,11 +5,12 @@ import {
   listarHistorico,
   limparHistorico,
 } from '../services/historicoService'
-import { formatarNumero, formatarData } from '../utils/formato'
+import { formatarNumero } from '../utils/formato'
 import Cabecalho from '../components/Cabecalho'
 import SeletorMoeda from '../components/SeletorMoeda'
 import CampoValor from '../components/CampoValor'
 import BotaoInverter from '../components/BotaoInverter'
+import CartaoCotacao from '../components/CartaoCotacao'
 import GraficoVariacao from '../components/GraficoVariacao'
 import Historico from '../components/Historico'
 
@@ -137,21 +138,13 @@ function Home() {
               </div>
             </div>
 
-            <div className="mt-4 min-h-[2.5rem] text-sm">
-              {erro && <p className="text-red-400">{erro}</p>}
-              {!erro && carregando && (
-                <p className="text-slate-400">Convertendo...</p>
-              )}
-              {!erro && !carregando && resultado && (
-                <div className="space-y-1 text-slate-400">
-                  <p>
-                    1 {resultado.de} = {formatarNumero(resultado.cotacao)}{' '}
-                    {resultado.para}
-                  </p>
-                  <p>Atualizado em {formatarData(resultado.atualizado_em)}</p>
-                </div>
-              )}
-            </div>
+            {erro && <p className="mt-4 text-sm text-red-400">{erro}</p>}
+            {!erro && resultado && (
+              <CartaoCotacao resultado={resultado} variacao={variacao} />
+            )}
+            {!erro && carregando && !resultado && (
+              <p className="mt-4 text-sm text-slate-400">Convertendo...</p>
+            )}
 
             <button
               type="button"
