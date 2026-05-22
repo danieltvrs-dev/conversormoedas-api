@@ -1,4 +1,5 @@
 import { formatarNumero, formatarData } from '../utils/formato'
+import MoedaIcone from './MoedaIcone'
 
 function Historico({ itens, aoLimpar, className = '' }) {
   return (
@@ -31,13 +32,17 @@ function Historico({ itens, aoLimpar, className = '' }) {
               key={item.id}
               className="rounded-lg border border-white/5 bg-slate-800/40 px-3 py-2.5"
             >
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-slate-300">
+              <div className="flex items-center justify-between gap-2 text-sm">
+                <span className="flex items-center gap-1.5 text-slate-300">
+                  <MoedaIcone codigo={item.moeda_origem} tamanho="sm" />
                   {formatarNumero(item.valor)} {item.moeda_origem}
                 </span>
                 <span className="shrink-0 text-slate-500">→</span>
-                <span className="truncate text-right font-semibold text-teal-400">
-                  {formatarNumero(item.valor_convertido)} {item.moeda_destino}
+                <span className="flex min-w-0 items-center gap-1.5 font-semibold text-teal-400">
+                  <MoedaIcone codigo={item.moeda_destino} tamanho="sm" />
+                  <span className="truncate">
+                    {formatarNumero(item.valor_convertido)} {item.moeda_destino}
+                  </span>
                 </span>
               </div>
               <p className="mt-0.5 text-xs text-slate-500">
