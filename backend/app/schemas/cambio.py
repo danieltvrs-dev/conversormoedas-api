@@ -13,3 +13,8 @@ class RespostaConversao(BaseModel):
     cotacao: float
     valor_convertido: float
     atualizado_em: str
+
+
+class PontoVariacao(BaseModel):
+    data: str
+    cotacao: float
