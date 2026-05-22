@@ -87,3 +87,51 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
         return resultado
     except (KeyError, ValueError):
         raise ErroCambio("Resposta inesperada do serviço de câmbio.")
+
+
+def variacao(de: str, para: str, dias: int) -> list[dict]:
+    de = de.upper()
+    para = para.upper()
+    _validar_moeda(de)
+    _validar_moeda(para)
+
+    serie_de = _serie_diaria(de, dias)
+    serie_para = _serie_diaria(para, dias)
+
+    if serie_de is not None and serie_para is not None:
+        datas = sorted(set(serie_de) & set(serie_para))
+    elif serie_de is not None:
+        datas = sorted(serie_de)
+    elif serie_para is not None:
+        datas = sorted(serie_para)
+    else:
+        datas = []
+
+    pontos = []
+    for data in datas:
+        valor_de = 1.0 if serie_de is None else serie_de[data]
+        valor_para = 1.0 if serie_para is None else serie_para[data]
+        pontos.append({"data": data, "cotacao": round(valor_de / valor_para, 8)})
+    return pontos
+
+
+def _serie_diaria(moeda: str, dias: int) -> dict | None:
+    if moeda == "BRL":
+        return None
+
+    try:
+        resposta = httpx.get(f"{URL_BASE}/daily/{moeda}-BRL/{dias}", timeout=10)
+    except httpx.RequestError:
+        raise ErroCambio("Serviço de câmbio indisponível no momento.")
+
+    if resposta.status_code != 200:
+        raise ErroCambio("Serviço de câmbio indisponível no momento.")
+
+    try:
+        serie = {}
+        for item in resposta.json():
+            data = datetime.fromtimestamp(int(item["timestamp"])).strftime("%Y-%m-%d")
+            serie.setdefault(data, float(item["bid"]))
+        return serie
+    except (KeyError, ValueError, TypeError):
+        raise ErroCambio("Resposta inesperada do serviço de câmbio.")
