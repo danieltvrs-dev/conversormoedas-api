@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import CORS_ORIGINS
-from app.database import Base, engine
+from app.database import criar_tabelas
 from app.models import conversao  # importado para registrar a tabela no SQLAlchemy
 from app.routers import cambio, historico
 
-Base.metadata.create_all(bind=engine)
+criar_tabelas()
 
 app = FastAPI(title="API de Conversão de Moedas")
 
