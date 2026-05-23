@@ -72,7 +72,8 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
     pares = ",".join(f"{moeda}-BRL" for moeda in moedas)
     try:
         resposta = httpx.get(f"{URL_BASE}/last/{pares}", timeout=10)
-    except httpx.RequestError:
+    except httpx.RequestError as erro:
+        print(f"[cambio] erro em /last/{pares}: {type(erro).__name__}: {erro}")
         raise ErroCambio("Serviço de câmbio indisponível no momento.")
 
     if resposta.status_code != 200:
@@ -121,7 +122,8 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
 
     try:
         resposta = httpx.get(f"{URL_BASE}/daily/{moeda}-BRL/{dias}", timeout=10)
-    except httpx.RequestError:
+    except httpx.RequestError as erro:
+        print(f"[cambio] erro em /daily/{moeda}-BRL/{dias}: {type(erro).__name__}: {erro}")
         raise ErroCambio("Serviço de câmbio indisponível no momento.")
 
     if resposta.status_code != 200:
