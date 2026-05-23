@@ -1,8 +1,28 @@
+import time
 from datetime import datetime
 
 import httpx
 
 URL_BASE = "https://economia.awesomeapi.com.br/json"
+
+_TTL_COTACAO_ATUAL = 300
+_TTL_VARIACAO_DIARIA = 3600
+_cache: dict = {}
+
+
+def _cache_obter(chave: str):
+    item = _cache.get(chave)
+    if not item:
+        return None
+    expira_em, valor = item
+    if time.time() > expira_em:
+        _cache.pop(chave, None)
+        return None
+    return valor
+
+
+def _cache_guardar(chave: str, valor, ttl: int) -> None:
+    _cache[chave] = (time.time() + ttl, valor)
 
 MOEDAS = {
     "BRL": "Real Brasileiro",
@@ -69,6 +89,11 @@ def _cotacao_via_real(de: str, para: str) -> tuple[float, str]:
 
 
 def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
+    chave_cache = "last:" + ",".join(sorted(moedas))
+    em_cache = _cache_obter(chave_cache)
+    if em_cache is not None:
+        return em_cache
+
     pares = ",".join(f"{moeda}-BRL" for moeda in moedas)
     try:
         resposta = httpx.get(f"{URL_BASE}/last/{pares}", timeout=10)
@@ -96,6 +121,7 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
         for moeda in moedas:
             par = dados[f"{moeda}BRL"]
             resultado[moeda] = (float(par["bid"]), par["create_date"])
+        _cache_guardar(chave_cache, resultado, _TTL_COTACAO_ATUAL)
         return resultado
     except (KeyError, ValueError):
         raise ErroCambio("Resposta inesperada do serviço de câmbio.")
@@ -131,6 +157,11 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
     if moeda == "BRL":
         return None
 
+    chave_cache = f"daily:{moeda}:{dias}"
+    em_cache = _cache_obter(chave_cache)
+    if em_cache is not None:
+        return em_cache
+
     try:
         resposta = httpx.get(f"{URL_BASE}/daily/{moeda}-BRL/{dias}", timeout=10)
     except httpx.RequestError as erro:
@@ -156,6 +187,7 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
         for item in resposta.json():
             data = datetime.fromtimestamp(int(item["timestamp"])).strftime("%Y-%m-%d")
             serie.setdefault(data, float(item["bid"]))
+        _cache_guardar(chave_cache, serie, _TTL_VARIACAO_DIARIA)
         return serie
     except (KeyError, ValueError, TypeError):
         raise ErroCambio("Resposta inesperada do serviço de câmbio.")
