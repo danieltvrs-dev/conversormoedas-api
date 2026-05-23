@@ -106,23 +106,11 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
             timeout=10,
             headers=_HEADERS_AWESOMEAPI,
         )
-    except httpx.RequestError as erro:
-        print(
-            f"[cambio] erro em /last/{pares}: {type(erro).__name__}: {erro}",
-            flush=True,
-        )
-        raise ErroCambio(
-            f"Serviço de câmbio indisponível ({type(erro).__name__})."
-        )
+    except httpx.RequestError:
+        raise ErroCambio("Serviço de câmbio indisponível no momento.")
 
     if resposta.status_code != 200:
-        print(
-            f"[cambio] /last/{pares} respondeu {resposta.status_code}: {resposta.text[:200]}",
-            flush=True,
-        )
-        raise ErroCambio(
-            f"Serviço de câmbio indisponível (status {resposta.status_code})."
-        )
+        raise ErroCambio("Serviço de câmbio indisponível no momento.")
 
     try:
         dados = resposta.json()
@@ -177,23 +165,11 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
             timeout=10,
             headers=_HEADERS_AWESOMEAPI,
         )
-    except httpx.RequestError as erro:
-        print(
-            f"[cambio] erro em /daily/{moeda}-BRL/{dias}: {type(erro).__name__}: {erro}",
-            flush=True,
-        )
-        raise ErroCambio(
-            f"Serviço de câmbio indisponível ({type(erro).__name__})."
-        )
+    except httpx.RequestError:
+        raise ErroCambio("Serviço de câmbio indisponível no momento.")
 
     if resposta.status_code != 200:
-        print(
-            f"[cambio] /daily/{moeda}-BRL/{dias} respondeu {resposta.status_code}: {resposta.text[:200]}",
-            flush=True,
-        )
-        raise ErroCambio(
-            f"Serviço de câmbio indisponível (status {resposta.status_code})."
-        )
+        raise ErroCambio("Serviço de câmbio indisponível no momento.")
 
     try:
         serie = {}
