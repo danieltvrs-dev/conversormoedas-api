@@ -3,7 +3,12 @@ from datetime import datetime
 
 import httpx
 
+from app.config import AWESOMEAPI_KEY
+
 URL_BASE = "https://economia.awesomeapi.com.br/json"
+_HEADERS_AWESOMEAPI = (
+    {"x-api-key": AWESOMEAPI_KEY} if AWESOMEAPI_KEY else None
+)
 
 _TTL_COTACAO_ATUAL = 300
 _TTL_VARIACAO_DIARIA = 3600
@@ -96,7 +101,11 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
 
     pares = ",".join(f"{moeda}-BRL" for moeda in moedas)
     try:
-        resposta = httpx.get(f"{URL_BASE}/last/{pares}", timeout=10)
+        resposta = httpx.get(
+            f"{URL_BASE}/last/{pares}",
+            timeout=10,
+            headers=_HEADERS_AWESOMEAPI,
+        )
     except httpx.RequestError as erro:
         print(
             f"[cambio] erro em /last/{pares}: {type(erro).__name__}: {erro}",
@@ -163,7 +172,11 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
         return em_cache
 
     try:
-        resposta = httpx.get(f"{URL_BASE}/daily/{moeda}-BRL/{dias}", timeout=10)
+        resposta = httpx.get(
+            f"{URL_BASE}/daily/{moeda}-BRL/{dias}",
+            timeout=10,
+            headers=_HEADERS_AWESOMEAPI,
+        )
     except httpx.RequestError as erro:
         print(
             f"[cambio] erro em /daily/{moeda}-BRL/{dias}: {type(erro).__name__}: {erro}",
