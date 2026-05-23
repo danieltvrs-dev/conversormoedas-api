@@ -2,7 +2,7 @@
 
 Uma plataforma para converter valores entre moedas em tempo real. Você escolhe a moeda de origem e a de destino, digita um valor e vê o resultado na hora, junto com a cotação atual e um gráfico de como ela variou nos últimos dias.
 
-Comecei esse projeto como estudo de desenvolvimento fullstack, e ele também serve como peça de portfólio.
+Comecei esse projeto como estudo de desenvolvimento fullstack. https://conversormoedas-app.onrender.com
 
 ## Funcionalidades
 
