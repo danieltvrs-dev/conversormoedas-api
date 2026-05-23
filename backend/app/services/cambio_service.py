@@ -73,8 +73,13 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
     try:
         resposta = httpx.get(f"{URL_BASE}/last/{pares}", timeout=10)
     except httpx.RequestError as erro:
-        print(f"[cambio] erro em /last/{pares}: {type(erro).__name__}: {erro}")
-        raise ErroCambio("Serviço de câmbio indisponível no momento.")
+        print(
+            f"[cambio] erro em /last/{pares}: {type(erro).__name__}: {erro}",
+            flush=True,
+        )
+        raise ErroCambio(
+            f"Serviço de câmbio indisponível ({type(erro).__name__})."
+        )
 
     if resposta.status_code != 200:
         raise ErroCambio("Serviço de câmbio indisponível no momento.")
@@ -123,8 +128,13 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
     try:
         resposta = httpx.get(f"{URL_BASE}/daily/{moeda}-BRL/{dias}", timeout=10)
     except httpx.RequestError as erro:
-        print(f"[cambio] erro em /daily/{moeda}-BRL/{dias}: {type(erro).__name__}: {erro}")
-        raise ErroCambio("Serviço de câmbio indisponível no momento.")
+        print(
+            f"[cambio] erro em /daily/{moeda}-BRL/{dias}: {type(erro).__name__}: {erro}",
+            flush=True,
+        )
+        raise ErroCambio(
+            f"Serviço de câmbio indisponível ({type(erro).__name__})."
+        )
 
     if resposta.status_code != 200:
         raise ErroCambio("Serviço de câmbio indisponível no momento.")
