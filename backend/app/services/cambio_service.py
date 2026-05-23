@@ -82,7 +82,13 @@ def _consultar_awesomeapi(moedas: list[str]) -> dict[str, tuple[float, str]]:
         )
 
     if resposta.status_code != 200:
-        raise ErroCambio("Serviço de câmbio indisponível no momento.")
+        print(
+            f"[cambio] /last/{pares} respondeu {resposta.status_code}: {resposta.text[:200]}",
+            flush=True,
+        )
+        raise ErroCambio(
+            f"Serviço de câmbio indisponível (status {resposta.status_code})."
+        )
 
     try:
         dados = resposta.json()
@@ -137,7 +143,13 @@ def _serie_diaria(moeda: str, dias: int) -> dict | None:
         )
 
     if resposta.status_code != 200:
-        raise ErroCambio("Serviço de câmbio indisponível no momento.")
+        print(
+            f"[cambio] /daily/{moeda}-BRL/{dias} respondeu {resposta.status_code}: {resposta.text[:200]}",
+            flush=True,
+        )
+        raise ErroCambio(
+            f"Serviço de câmbio indisponível (status {resposta.status_code})."
+        )
 
     try:
         serie = {}
