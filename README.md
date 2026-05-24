@@ -13,6 +13,10 @@ Conversor fullstack em tempo real, com histórico persistente e gráfico de vari
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-4169e1?logo=postgresql&logoColor=white)](https://postgresql.org)
 [![Render](https://img.shields.io/badge/deploy-Render-46e3b7?logo=render&logoColor=white)](https://render.com)
 
+<br />
+
+<img src="docs/screenshot.png" alt="Tela do conversor de moedas" width="900" />
+
 </div>
 
 ---
